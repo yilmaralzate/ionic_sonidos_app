@@ -1,14 +1,57 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
+    <ion-navbar color="primary">
+        <ion-title>
+            Sonidos App
+        </ion-title>
+
+        <ion-buttons end>
+
+            <button ion-button *ngIf="!ordenamiento" (click)="ordenamiento=true">
+            Reordenar
+            </button>
+
+            <button ion-button *ngIf="ordenamiento" (click)="ordenamiento=false">
+            Listo
+            </button>
+
+        </ion-buttons>
+
+    </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<!--ion-content padding-->
+<ion-content>
+
+    <ion-refresher [enabled]="!ordenamiento" (ionRefresh)="refrescar_animales($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <!-- Controlo el reorder usando la variable ordenamiento con [reorder], se muestra si ordenamiento es true-->
+    <!--ion-list reorder="true" (ionItemReorder)="reordenar_item($event)"-->
+    <ion-list [reorder]="ordenamiento" (ionItemReorder)="reordenar_item($event)">
+        <ion-item-sliding *ngFor="let iterador of animales; let i = index">
+            <ion-item (click)="playSound( iterador )">
+                <!-- Se llama ala variable animales:any -->
+                <ion-avatar item-start>
+                    <img [src]="iterador.imagen">
+                    <!-- Esta es la forma de llamar el dato desde un array-->
+                </ion-avatar>
+                <h2>{{iterador.nombre}}</h2>
+
+                <!-- Se muestra PLAY si iterador.reproduciendo NO es true -->
+                <!-- Se muestra PAUSE si iterador.reproduciendo SI es true -->
+                <ion-icon *ngIf="!iterador.reproduciendo" name="play" item-right></ion-icon>
+                <ion-icon *ngIf="iterador.reproduciendo" name="pause" item-right></ion-icon>
+                <!-- Aqui se llama con el iterador al elemento del array donde esta el nombre-->
+            </ion-item>
+
+            <ion-item-options side="right">
+                <button ion-button color="danger" (click)="borrar_animal(i)">
+                <ion-icon name="trash"></ion-icon>
+                Borrar
+              </button>
+            </ion-item-options>
+
+        </ion-item-sliding>
+    </ion-list>
 </ion-content>
